@@ -62,7 +62,8 @@ def ser(obj, exclude=()):
 # ---------- Santé / synthèse ----------
 @app.get("/api/health")
 def health():
-    return {"ok": True, "scheduler": scheduler.status()}
+    # dialecte uniquement (sqlite / postgresql), jamais l'URL de connexion
+    return {"ok": True, "scheduler": scheduler.status(), "database": db.get_engine().dialect.name}
 
 
 @app.get("/api/dashboard")

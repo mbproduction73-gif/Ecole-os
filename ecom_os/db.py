@@ -1,10 +1,13 @@
 """Accès base de données : SQLite par défaut, PostgreSQL via DATABASE_URL."""
+import logging
 from contextlib import contextmanager
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from . import config
+
+logger = logging.getLogger(__name__)
 
 
 class Base(DeclarativeBase):
@@ -37,6 +40,8 @@ def configure(url: str | None = None):
     _SessionLocal = sessionmaker(bind=_engine, expire_on_commit=False)
     from . import models  # noqa: F401  (enregistre les tables)
     Base.metadata.create_all(_engine)
+    # Jamais l'URL complète : seulement le dialecte (sqlite / postgresql).
+    logger.info("Moteur de base de données : %s", _engine.dialect.name)
     return _engine
 
 

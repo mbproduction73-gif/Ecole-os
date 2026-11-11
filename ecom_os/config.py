@@ -38,7 +38,17 @@ def normalize_database_url(url: str) -> str:
 
 
 def database_url() -> str:
-    return normalize_database_url(env("DATABASE_URL", f"sqlite:///{BASE_DIR / 'data' / 'ecom_os.db'}"))
+    url = env("DATABASE_URL")
+    if url:
+        return normalize_database_url(url)
+    # Sur Render, le disque du service gratuit est éphémère : un SQLite silencieux
+    # ferait perdre toutes les données à chaque déploiement.
+    if env("RENDER"):
+        raise RuntimeError(
+            "DATABASE_URL est obligatoire sur Render : sans PostgreSQL, "
+            "les données disparaissent à chaque déploiement."
+        )
+    return f"sqlite:///{BASE_DIR / 'data' / 'ecom_os.db'}"
 
 
 TIMEZONE = env("TIMEZONE", "Europe/Brussels")

@@ -2,7 +2,8 @@ from .conftest import OFFERS_CSV, PRODUCTS_CSV
 
 
 def test_health_and_dashboard(client):
-    assert client.get("/api/health").json()["ok"] is True
+    h = client.get("/api/health").json()
+    assert h["ok"] is True and h["database"] == "sqlite"
     d = client.get("/api/dashboard").json()
     assert d["products"] == 0 and d["settings"]["emergency_stop"] is False and d["spend_eur"] == 0
 
