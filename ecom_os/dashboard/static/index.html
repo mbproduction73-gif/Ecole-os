@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ecom-OS – Tableau de bord</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="manifest" href="/static/manifest.json">
+</head>
+<body>
+<header>
+  <h1>Ecom-OS</h1>
+  <span id="stopBadge" class="badge hidden">STOP ALL ACTIF</span>
+  <span id="autoBadge" class="badge ok hidden">AUTO MODE</span>
+</header>
+<section class="commands">
+  <button data-cmd="scan-market">SCAN MARKET</button>
+  <button data-cmd="find-winners">FIND WINNERS</button>
+  <button data-cmd="connect-supplier">CONNECT SUPPLIER</button>
+  <button data-cmd="build-store">BUILD STORE</button>
+  <button data-cmd="create-ads">CREATE ADS</button>
+  <button data-cmd="optimize-sales">OPTIMIZE SALES</button>
+  <button data-cmd="financial-report">FINANCIAL REPORT</button>
+  <button data-cmd="run-pipeline">PIPELINE DU JOUR</button>
+  <button id="autoBtn">AUTO MODE</button>
+  <button id="stopBtn" class="danger">STOP ALL</button>
+</section>
+<pre id="output" class="output">Résultats des commandes ici.</pre>
+<nav class="tabs">
+  <button data-tab="overview" class="active">Synthèse</button>
+  <button data-tab="products">Produits</button>
+  <button data-tab="suppliers">Fournisseurs</button>
+  <button data-tab="connectors">Boutiques & connecteurs</button>
+  <button data-tab="drafts">Brouillons</button>
+  <button data-tab="approvals">Validations</button>
+  <button data-tab="finance">Finance</button>
+  <button data-tab="logs">Historique</button>
+  <button data-tab="settings">Paramètres</button>
+</nav>
+<main>
+  <section id="tab-overview" class="tab active"><div id="cards" class="cards"></div><h3>Dernier rapport</h3><div id="report"></div></section>
+  <section id="tab-products" class="tab">
+    <form id="importProducts" class="inline"><label>Importer des produits (CSV) <input type="file" name="file" accept=".csv" required></label><button>Importer</button> <a href="/api/templates/products.csv">modèle CSV</a></form>
+    <details><summary>Ajouter un produit manuellement</summary>
+      <form id="addProduct" class="grid">
+        <input name="name" placeholder="Nom *" required>
+        <input name="keyword" placeholder="Mot-clé de recherche">
+        <input name="niche" placeholder="Niche">
+        <input name="problem_solved" placeholder="Problème résolu">
+        <input name="target_customer" placeholder="Client cible">
+        <input name="est_sale_price" type="number" step="0.01" placeholder="Prix de vente TTC envisagé (€)">
+        <input name="demand_index" type="number" step="0.1" min="0" max="100" placeholder="Indice demande 0-100 (source vérifiable)">
+        <input name="competition_level" type="number" step="0.1" min="0" max="100" placeholder="Concurrence 0-100">
+        <input name="marketing_potential" type="number" step="0.1" min="0" max="100" placeholder="Potentiel marketing 0-100">
+        <button>Ajouter</button>
+      </form></details>
+    <div id="productsTable" class="table-wrap"></div>
+  </section>
+  <section id="tab-suppliers" class="tab">
+    <form id="importOffers" class="inline"><label>Importer des offres fournisseurs (CSV) <input type="file" name="file" accept=".csv" required></label><button>Importer</button> <a href="/api/templates/offers.csv">modèle CSV</a></form>
+    <div id="suppliersTable" class="table-wrap"></div><h3>Comparaison des offres</h3><div id="compare"></div>
+  </section>
+  <section id="tab-connectors" class="tab"><div id="connectorsTable" class="table-wrap"></div></section>
+  <section id="tab-drafts" class="tab"><div id="draftsList"></div></section>
+  <section id="tab-approvals" class="tab"><div id="approvalsList"></div></section>
+  <section id="tab-finance" class="tab">
+    <form id="financeForm" class="grid">
+      <label>Prix TTC (€)<input name="sale_price_ttc" type="number" step="0.01" required value="29.90"></label>
+      <label>Coût fournisseur (€)<input name="supplier_cost" type="number" step="0.01" required value="8"></label>
+      <label>Livraison (€)<input name="shipping_cost" type="number" step="0.01" value="4"></label>
+      <label>Pub par commande (€)<input name="ads_cost_per_order" type="number" step="0.01" value="0"></label>
+      <label>Frais variables (€)<input name="variable_fees" type="number" step="0.01" value="0.5"></label>
+      <label>Taux de retours (0-1)<input name="returns_rate" type="number" step="0.01" value="0.05"></label>
+      <label>TVA (0-1, vide = paramètre)<input name="vat_rate" type="number" step="0.01"></label>
+      <button>Calculer</button>
+    </form>
+    <div id="financeResult"></div>
+  </section>
+  <section id="tab-logs" class="tab"><div id="logsTable" class="table-wrap"></div></section>
+  <section id="tab-settings" class="tab">
+    <form id="settingsForm" class="grid"></form>
+    <p class="muted">Jeton d'accès (si DASHBOARD_TOKEN est défini sur le serveur) :
+      <input id="tokenInput" placeholder="jeton"><button id="saveToken" type="button">Enregistrer</button></p>
+  </section>
+</main>
+<footer class="muted">Aucune donnée simulée : toute intégration absente est affichée « non connecté ». Les actions de niveau C exigent votre validation.</footer>
+<script src="/static/app.js"></script>
+</body>
+</html>
