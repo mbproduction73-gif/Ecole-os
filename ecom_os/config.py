@@ -28,8 +28,17 @@ def env(name: str, default: str | None = None) -> str | None:
     return val
 
 
+def normalize_database_url(url: str) -> str:
+    """SQLAlchemy a besoin du driver psycopg dans le schéma (Render/Heroku donnent postgres:// ou postgresql://)."""
+    if url.startswith("postgres://"):
+        return "postgresql+psycopg://" + url[len("postgres://"):]
+    if url.startswith("postgresql://"):
+        return "postgresql+psycopg://" + url[len("postgresql://"):]
+    return url
+
+
 def database_url() -> str:
-    return env("DATABASE_URL", f"sqlite:///{BASE_DIR / 'data' / 'ecom_os.db'}")
+    return normalize_database_url(env("DATABASE_URL", f"sqlite:///{BASE_DIR / 'data' / 'ecom_os.db'}"))
 
 
 TIMEZONE = env("TIMEZONE", "Europe/Brussels")

@@ -16,8 +16,7 @@ _SessionLocal = None
 
 
 def _make_engine(url: str):
-    if url.startswith("postgres://"):  # format Heroku/Render
-        url = url.replace("postgres://", "postgresql+psycopg://", 1)
+    url = config.normalize_database_url(url)
     kwargs = {"pool_pre_ping": True}
     if url.startswith("sqlite"):
         kwargs["connect_args"] = {"check_same_thread": False}
